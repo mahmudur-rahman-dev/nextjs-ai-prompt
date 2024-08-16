@@ -14,11 +14,21 @@ const MyProfile = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      const response = await fetch(`/api/users/${session?.user.id}/posts`);
-      const data = response.json();
+      try {
+        const response = await fetch(`/api/users/${session?.user.id}/posts`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log("calling api for data:", data);
 
-      setMyposts(data);
+        setMyposts(data);
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+      }
     };
+
+    console.log("user id", session?.user.id);
     if (session?.user.id) fetchPost();
   }, [session?.user.id]);
 
